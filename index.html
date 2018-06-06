@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<style>
+div {
+    #width: 50%;
+    border-radius: 5px;
+    background-color: #f2f2f2;
+    padding: 10px;
+}
+::placeholder {
+    color: lightgrey;
+    opacity: 1 ;
+}
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: lightgrey;
+}
+::-ms-input-placeholder { /* Microsoft Edge */
+    color: lightgrey;
+}
+input[type=text], select, textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 20px;
+    resize: vertical;
+}
+table {
+    #border-collapse: collapse;
+    border: 1px solid black;
+    width: 100%;
+}
+
+th, td {
+    text-align: center;
+    border: 1px solid black;
+    font-size: 18px;
+    padding: 8px;
+}
+
+tr:nth-child(even){background-color: #f2f2f2}
+
+#th {
+#    background-color: #4CAF50;
+#    color: white;
+#}
+</style>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="https://jqueryui.com/resources/demos/style.css">
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+$(document).ready(function(){
+   var brdScore1 = 0
+   var bsatScore1 = 0
+   $("#brdScoreErr").hide();
+   $("#bsatScoreErr").hide();
+   $("input").keyup(function(){
+      var brdScore1Str = $("#brdScore").val();
+      var bsatScore1Str  = $("#bsatScore").val();
+      brdScore1 = (brdScore1Str === "") ? 0 : parseFloat(brdScore1Str);
+      bsatScore1 = (bsatScore1Str === "") ? 0 : parseInt(bsatScore1Str);
+      //brdScore1 = parseFloat(brdScore1Str);
+      //bsatScore1 = parseInt(bsatScore1Str);
+      //alert("bsatScore1Str = :" + bsatScore1Str + ":");
+      if (isNaN(brdScore1) || brdScore1 < 0 || brdScore1 > 100) {
+        $("#brdScoreErr").show();
+        brdScore1  = 0;
+      } else {
+        $("#brdScoreErr").hide();
+      }
+      if (isNaN(bsatScore1) || bsatScore1 < 0 || bsatScore1 > 450) {
+        $("#bsatScoreErr").show();
+        bsatScore1 = 0;
+      } else {
+        $("#bsatScoreErr").hide();
+      }
+      /*if (isNaN(brdScore1) || isNaN(bsatScore1) || brdScore1 < 0 
+           || brdScore1 > 100 || bsatScore1 < 0 || bsatScore1 >450) {
+        alert("Invalid input");
+        return;
+      } */
+      updateFeeReduction(brdScore1, bsatScore1);
+   });
+   updateFeeReduction(brdScore1, bsatScore1);
+   //alert("1:OK " + brdScore1 + " " + bsatScore1);
+ });
+
+function updateFeeReduction(brdScore1, bsatScore1) {
+    var tutionFee = tutionFeePayable = 21650.0;
+    var hostelFee = hostelFeePayable = 15000.0;
+    var tutionFeeReduction = tutionFeeReductionPC = tutionFeeReductionAmt = 0.0;
+    var hostelFeeReduction = hostelFeeReductionPC = hostelFeeReductionAmt = 0.0;
+   //alert("2:OK " + brdScore1  + " " + bsatScore1 + " " + isHosteller);
+      if (bsatScore1 >= 300) {
+         tutionFeeReduction = 0.75;
+         hostelFeeReduction = 0.25;
+      } else if ( bsatScore1 >= 250 && bsatScore1 <=299 ) {
+         tutionFeeReduction = 0.50;
+         hostelFeeReduction = 0.25;
+      } else {
+         if (brdScore1 >= 95.00 ) {
+            tutionFeeReduction = 0.40;
+            hostelFeeReduction = 0.25;
+            if ( bsatScore1 >= 200 && bsatScore1 <=249 ) {
+               tutionFeeReduction = 0.50;
+            } 
+         } else if (brdScore1 >= 90.00) {
+            tutionFeeReduction = 0.25;
+            hostelFeeReduction = 0.25;
+            if ( bsatScore1 >= 200 && bsatScore1 <=249 ) {
+               tutionFeeReduction = 0.50;
+            } 
+         } else if  (brdScore1 >= 80.00) {
+            tutionFeeReduction = 0.15;
+            if ( bsatScore1 >= 200 && bsatScore1 <=249 ) {
+               tutionFeeReduction = 0.40;
+            }
+            if ( bsatScore1 >= 150 ) {
+               hostelFeeReduction = 0.25;
+            }
+         } else {
+            if ( bsatScore1 >= 200 && bsatScore1 <=249 ) {
+               tutionFeeReduction = 0.25;
+               hostelFeeReduction = 0.25;
+            } else if ( bsatScore1 >= 150 ) {
+               hostelFeeReduction = 0.25;
+            }
+         }
+      }
+    tutionFeeReductionPC = tutionFeeReduction * 100;
+    hostelFeeReductionPC = hostelFeeReduction * 100;
+    tutionFeeReductionAmt = tutionFee * tutionFeeReduction;
+    tutionFeeReductionAmtStr = 
+        tutionFeeReductionAmt.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+    hostelFeeReductionAmt = hostelFee * hostelFeeReduction;
+    hostelFeeReductionAmtStr = 
+        hostelFeeReductionAmt.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+    tutionFeePayable = tutionFee - tutionFeeReductionAmt;
+    tutionFeePayableStr =
+        tutionFeePayable.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+    hostelFeePayable = hostelFee - hostelFeeReductionAmt;
+    hostelFeePayableStr =
+        hostelFeePayable.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+    $("#tutionFeeReductionPC").html("<b>" + tutionFeeReductionPC + "%</b>");
+    $("#tutionFeeReductionAmt").html("<b>" + tutionFeeReductionAmtStr + "</b>");
+    $("#tutionFeePayable").html("<b>"+ tutionFeePayableStr + "</b>");
+    $("#hostelFeeReductionPC").html("<b>" + hostelFeeReductionPC + "%</b>");
+    $("#hostelFeeReductionAmt").html("<b>" + hostelFeeReductionAmtStr + "</b>");
+    $("#hostelFeePayable").html("<b>"+ hostelFeePayableStr + "</b>");
+      //alert("3:OK: tutionFeeReduction= "+ tutionFeeReduction  + " : HostelFeeReduction= " + hostelFeeReduction);
+}
+</script>
+</head>
+<body>
+
+<div>
+  <div style="width:100%">
+  <img src="img/BITS_Dubai_campus_logo.gif">
+  </div>
+<h2>Scholarship Calculator</h2>
+<p style="font-size:20px">
+ <label style="width:75%">Enter your Grade 12 overall aggregate in percentage(%) : </label><br>
+ <input id="brdScore" type="text" name="brdScore" 
+  min="0" max="100" placeholder="Eg. 95.45" maxlength="5" style="width:25%">
+  <p id="brdScoreErr" style="font-size:20px;width:50%;color:red;">
+    Board Score Error : Value must be between 0 - 100 
+  </p> <br>
+<p style="font-size:20px">
+ <label style="width:75%"> Enter your BITSAT Score (2017/2018): </label><br>
+ <input id="bsatScore" type="text" name="bsatScore" 
+   min="0" max="450" placeholder="Eg. 215" maxlength="5" style="width:25%">
+  <p id="bsatScoreErr" style="font-size:20px;width:50%;color:red;">
+    BITSAT Score Error : Value must be between 0 - 450
+  </p> <br>
+</p>
+ 
+<table style="width:100%">
+   <tbody>
+   <tr>
+      <th>TUITION FEE PER SEMESTER <br>(AED)</th>
+      <th>SCHOLARSHIP ELIGIBLE</th>
+      <th>SCHOLARSHIP AMOUNT <br>(AED)</th>
+      <th>FEE PAYABLE IN  I SEMESTER DEDUCTING  SCHOLARSHIP AMOUNT <br>(AED)</th>
+   </tr>
+   <tr>
+      <td><b>21,650 </b></td>
+      <td id="tutionFeeReductionPC"></td>
+      <td id="tutionFeeReductionAmt"></td>
+      <td id="tutionFeePayable"></td>
+   </tr>
+   </tbody>
+</table>
+<ul style="width:100%">
+  Note: 
+    <li> The above scholarship is applicable on the first semester tuition fee.</li> 
+    <li> Scholarship of 20% will be awarded for the subsequent semesters subject to securing a CGPA of 9 on a scale of 10 at the end of each semester.</li>
+    <li> Vat of 5% is applicable on the fee payable.</li>
+</ul>
+<br>
+<br>
+<table style="width:100%">
+   <tbody>
+   <tr>
+      <th>HOSTEL FEE PER SEMESTER <br>(AED)</th>
+      <th>CONCESSION ELIGIBLE</th>
+      <th>CONCESSION AMOUNT <br>(AED)</th>
+      <th>FEE PAYABLE PER SEMESTER DEDUCTING CONCESSION AMOUNT <br>(AED)</th>
+   </tr>
+   <tr>
+      <td><b> 15,000 </b></td>
+      <td id="hostelFeeReductionPC"></td>
+      <td id="hostelFeeReductionAmt"></td>
+      <td id="hostelFeePayable"></td>
+   </tr>
+   </tbody>
+</table>
+<ul style="width:100%">
+  Note: 
+  <li> The above mentioned scholarship is applicable for the normal duration of the programme - 4 years (8 semesters) </li>
+  <li> Vat of 5% is applicable on the food cost of the hostel fee. </li>
+</ul>"
+
+<div style="width:100%">
+<img src="img/Three colour Line.bmp" style="width:50%">
+<img src="img/Lower.png" align="right" style="width:25%">
+</div>
+
+</div>
+
+
+</body>
+</html>
